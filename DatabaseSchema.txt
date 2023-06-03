@@ -1,0 +1,7 @@
+Signup Field
+-name 
+-email
+-phone 
+-adhaar
+-dob
+-address
