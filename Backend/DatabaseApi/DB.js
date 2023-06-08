@@ -13,3 +13,4 @@ mongoose.connect(
     console.log("DB connection fail")
     console.error(err)
 });
+exports.mongoose = mongoose
