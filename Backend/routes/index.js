@@ -18,14 +18,6 @@ router.get('/', function(req, res, next) {
 });
 router.post("/signup",(req,res,next)=>{
   let data = req.body
-  // const t = new TestTable({
-  //   name:req.body.name,
-  //   phone:req.body.phone
-  // });
-  // t.save().then(
-  //       () => console.log("One entry added"), 
-  //       (err) => console.log(err)
-  // );
   usr = new UserTable({
     name:data.name,
     phone:data.phone,
