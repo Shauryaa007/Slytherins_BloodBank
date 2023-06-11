@@ -1,6 +1,8 @@
 import React , {useState} from 'react';
+import {useNavigate} from "react-router-dom"
 
 function UserSignup(props){
+    let navigator = useNavigate()
     const [formdata, setformdata] = useState(
         {
             name:"",
@@ -33,7 +35,7 @@ function UserSignup(props){
                 console.log(res.status)
                 if(res.status == 200){
                     setshowmsg(true)
-                    
+                    navigator("/user/login")
                 }
             },
             err=>{
@@ -42,6 +44,7 @@ function UserSignup(props){
             }
         )
     }
+    
     return (
         <div class="bg-white font-family-karla h-screen">
 
