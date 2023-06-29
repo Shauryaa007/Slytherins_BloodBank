@@ -1,41 +1,37 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+require("dotenv").config();
+const cors = require("cors");
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const app = express();
+const connectDB = require("./db/connectDB");
+const authRouter = require("./routes/auth");
+const Users = require("./models/user");
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-app.use(logger('dev'));
+const notFoundMiddleware = require("./middleware/not-found");
+const errorHandlesMiddleware = require("./middleware/error-handler");
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(cors({ origin: "http://127.0.0.1:3000", credentials: true }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {  
-  next(createError(404));
+app.use("/auth", authRouter);
+app.get("/delete", async (req, res) => {
+  await Users.deleteMany({});
+  res.json("delete");
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(notFoundMiddleware);
+app.use(errorHandlesMiddleware);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+const port = process.env.PORT || 9000;
+const start = async () => {
+  try {
+    await connectDB(process.env.MONGO_URI);
+    app.listen(port, () => {
+      console.log(`Server is running on port : ${port}`);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-module.exports = app;
+start();
